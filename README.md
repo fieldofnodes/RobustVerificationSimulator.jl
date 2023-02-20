@@ -1,5 +1,3 @@
-# Robust Verification Simulator
-
 [![Build Status](https://github.com/fieldofnodes/RobustVerificationSimulator.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/fieldofnodes/RobustVerificationSimulator.jl/actions/workflows/CI.yml?query=branch%3Amain)
 # RobustVerificationSimulator.jl
 
@@ -19,4 +17,6 @@ Add package by
 
 ```
 julia> ] add https://github.com/fieldofnodes/RobustVerificationSimulator.jl
+
+julia> using RobustVerificationSimulator
 ```
