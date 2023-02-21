@@ -3,8 +3,8 @@
 There is a package QBase which will allow one to implelement the Dirac notation.
 These functions will be included in the package once I am ready to do so.
 
-
 ```julia
+
 using Pkg
 Pkg.activate(".")
 using QBase
@@ -80,13 +80,4 @@ Bra(ψ)*M₁*ψ
 
 Bra([1,0]) == adjoint(Ket([1,0]))
 
-
-# Sandwich rule
-
-# Identitiy
-
-# Normalisation
-
-
-
-````
+```
