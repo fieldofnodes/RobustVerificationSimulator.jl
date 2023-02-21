@@ -1,6 +1,11 @@
 [![Build Status](https://github.com/fieldofnodes/RobustVerificationSimulator.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/fieldofnodes/RobustVerificationSimulator.jl/actions/workflows/CI.yml?query=branch%3Amain)
 # RobustVerificationSimulator.jl
 
+## Docs
+I have not set up the automatic docs yet.
+
+But here is the [link to the current incomplete set of docs](https://fieldofnodes.github.io/RobustVerificationSimulator.jl/).
+
 ## Paper
 
 Verifying BQP Computations on Noisy Devices with Minimal Overhead
