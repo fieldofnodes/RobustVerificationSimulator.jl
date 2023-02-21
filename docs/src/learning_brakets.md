@@ -5,6 +5,7 @@ These functions will be included in the package once I am ready to do so.
 
 
 ```julia
+
 using Pkg
 Pkg.activate(".")
 using QBase
@@ -79,13 +80,6 @@ Bra(ψ)*M₁*ψ
 (M₀*ψ)/sqrt((Bra(ψ)*adjoint(M₀)*M₀*ψ)[1].re)
 
 Bra([1,0]) == adjoint(Ket([1,0]))
-
-
-# Sandwich rule
-
-# Identitiy
-
-# Normalisation
 
 
 
