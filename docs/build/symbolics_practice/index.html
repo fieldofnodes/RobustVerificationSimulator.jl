@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Experimenting with Symbolics.jl · RobustVerificationSimulator.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">RobustVerificationSimulator.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../WalkThrough/">A basic walk through</a></li><li><span class="tocitem">Previous iterations and prototypig</span><ul><li><a class="tocitem" href="../protocol_version_01/">First protocol attemps</a></li><li><a class="tocitem" href="../graphs_01/">Working with graphs 01</a></li><li><a class="tocitem" href="../graphs_02/">Working with graphs 02</a></li><li><a class="tocitem" href="../graphs_03/">Working with graphs 03</a></li><li><a class="tocitem" href="../learning_brakets/">Learning to use QBase.jl</a></li><li class="is-active"><a class="tocitem" href>Experimenting with Symbolics.jl</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Previous iterations and prototypig</a></li><li class="is-active"><a href>Experimenting with Symbolics.jl</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Experimenting with Symbolics.jl</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/fieldofnodes/RobustVerificationSimulator.jl/blob/main/docs/src/symbolics_practice.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Synbolics"><a class="docs-heading-anchor" href="#Synbolics">Synbolics</a><a id="Synbolics-1"></a><a class="docs-heading-anchor-permalink" href="#Synbolics" title="Permalink"></a></h1><p>It is possible to use julia for symbolic algedbra. As I was working through my understanding of the protocal, I wondered if it would be useful to have some symbolic representaion of the BraKet algebra. I have not progressed very far.</p><pre><code class="language-julia hljs">using Pkg
+Pkg.activate(&quot;.&quot;)
+using Symbolics
+@variables ϕᵥ k sᵥˣ sᵥᶻ rᵥ xᵥ
+
+&quot;&quot;&quot;
+    Computation
+    v∈I
+    Client: θ̃ᵥ = θᵥ + xᵥπ
+    xᵥ: Stored choicxe for {0,1}
+        Needed for recovering the original angle
+    δᵥ = ϕᵥ′ + θ̃ᵥ + rᵥπ 
+&quot;&quot;&quot;
+ϕᵥ′ = (-1)^sᵥˣ*ϕᵥ+sᵥᶻ*Num(π)
+θᵥ =  k*Num(π)/4
+θ̃ᵥ = θᵥ + xᵥ*Num(π)
+rπ = rᵥ*Num(π)    
+δᵥ = ϕᵥ′ + θ̃ᵥ + rπ 
+
+&quot;&quot;&quot;
+    Test
+    v∉Vⱼ
+    Client: δᵥ = {k|k∼U(0..7) : kπ/4}
+    v∈V
+    Client: δᵥ = θᵥ + rᵥπ, rᵥ∼U(0..1)
+&quot;&quot;&quot;
+# v∉Vⱼ
+θᵥ =  k*Num(π)/4
+δᵥ = θᵥ
+#v∈V
+rπ = rᵥ*Num(π)    
+θᵥ =  k*Num(π)/4
+δᵥ = θᵥ + rπ
+
+
+
+&quot;&quot;&quot;
+   Substitutions
+&quot;&quot;&quot;
+substitute(δᵥ,Dict(ϕᵥ =&gt; π/4, k =&gt; 1, sᵥˣ =&gt; 1, sᵥᶻ =&gt; 1, rᵥ =&gt; 1)) 
+substitute(rπ,Dict(rᵥ =&gt; 1))
+
+
+&quot;&quot;&quot;
+    I still need to build the &quot;sending to server part&quot; 
+    I send δᵥ to the server and the server send back bᵥ
+&quot;&quot;&quot;
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../learning_brakets/">« Learning to use QBase.jl</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 21 February 2023 04:30">Tuesday 21 February 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>First protocol attemps · RobustVerificationSimulator.jl</title><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">RobustVerificationSimulator.jl</a></span></div><form class="docs-search" action="../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li><a class="tocitem" href="../WalkThrough/">A basic walk through</a></li><li><span class="tocitem">Previous iterations and prototypig</span><ul><li class="is-active"><a class="tocitem" href>First protocol attemps</a></li><li><a class="tocitem" href="../graphs_01/">Working with graphs 01</a></li><li><a class="tocitem" href="../graphs_02/">Working with graphs 02</a></li><li><a class="tocitem" href="../graphs_03/">Working with graphs 03</a></li><li><a class="tocitem" href="../learning_brakets/">Learning to use QBase.jl</a></li><li><a class="tocitem" href="../symbolics_practice/">Experimenting with Symbolics.jl</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Previous iterations and prototypig</a></li><li class="is-active"><a href>First protocol attemps</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>First protocol attemps</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/fieldofnodes/RobustVerificationSimulator.jl/blob/main/docs/src/protocol_version_01.md" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="Protocol-prototype-version-01"><a class="docs-heading-anchor" href="#Protocol-prototype-version-01">Protocol prototype version 01</a><a id="Protocol-prototype-version-01-1"></a><a class="docs-heading-anchor-permalink" href="#Protocol-prototype-version-01" title="Permalink"></a></h1><p>This is a simple script I developed to get familiar the protocol ideas.</p><pre><code class="language-julia hljs">using Pkg
+Pkg.activate(&quot;.&quot;)
+
+using Statistics 
+using CairoMakie
+
+
+struct Test end
+struct Computation end
+struct Ok end
+struct Abort end
+struct Redo end
+
+// # Functions
+
+    &quot;&quot;&quot;
+        Assert that a number is between 0 and 1 and asserts that 
+        this true.
+    &quot;&quot;&quot;
+    function probability_asser(p)
+        return @assert 0 &lt;= p &lt;= 1 &quot;Input must be a probability (between 0 and 1), not $(p)&quot;
+    end
+
+
+    &quot;&quot;&quot; 
+    Call if the condition of Test or Computation is not meant
+    &quot;&quot;&quot;
+    function error_call_not_test_computation()
+        return error(&quot;This error emerges as an if-then-else statement failed the if and the elseif parts.&quot;)
+    end
+
+
+
+    &quot;&quot;&quot;
+        Input a probability -&gt; Union{Test,Computation}
+    &quot;&quot;&quot;
+    function choose_test_computation(p)
+        probability_asser(p)
+        u = rand()
+        if u &lt; p
+            return Test()
+        elseif u &gt;=p
+            return Computation()
+        else
+            error_call_not_test_computation()
+        end
+    end
+
+
+    &quot;&quot;&quot;
+        Input a probability -&gt; Union{OK,Abort}
+    &quot;&quot;&quot;
+    function return_ok_or_abort(p)
+        probability_asser(p)
+        u = rand()
+        if u &lt; p
+            return Ok()
+        elseif u &gt;=p
+            return Abort()
+        else
+            error_call_not_test_computation()
+        end
+    end
+
+    &quot;&quot;&quot;
+        Input two proabailites (u,p) -&gt; u
+        If uₜₑₛₜ &lt; p -&gt; draw new u ~ U(0,1)
+        else return u 
+    &quot;&quot;&quot;
+    function do_redo(u,p)
+        probability_asser(p)
+        uₜₑₛₜ = rand()
+        if uₜₑₛₜ &lt; p
+            return rand()
+        elseif uₜₑₛₜ &gt;=p
+            return u
+        else
+            error_call_not_test_computation()
+        end
+    end
+
+
+    &quot;&quot;&quot;
+        Return abort with redo option
+        (Redo(),p₁,p₂) -&gt; Union{Ok,Abort}
+        p₁ is to detemine result in Ok or Abort
+        p₂ is to determine if we do a Redo
+        which at the moment just redraws the uniform 
+    &quot;&quot;&quot;
+
+    function return_ok_or_abort(::Redo,p₁,p₂)
+        probability_asser(p)
+        u = rand()
+        u = do_redo(u,p)
+        if u &lt; p
+            return Ok()
+        elseif u &gt;=p
+            return Abort()
+        else
+            error_call_not_test_computation()
+        end
+    end
+    &quot;&quot;&quot;
+    Take (round_type,p) -&gt; Union{OK,Abort}
+    &quot;&quot;&quot;
+    function get_round_result(round_type,p)
+        if round_type isa Test
+            return return_ok_or_abort(p)
+        elseif round_type isa Computation
+            return return_ok_or_abort(p)
+        else
+            error_call_not_test_computation()
+        end
+    end
+
+
+    &quot;&quot;&quot;
+    Get ratio of occurence between two types
+    &quot;&quot;&quot;
+    function get_ratio_between_two_types(types_vec,types_test)
+
+        N = length(types_vec)
+
+        count_of_type1 = sum(map(r -&gt; r isa typeof(types_test[1]),types_vec))
+        count_of_type2 = sum(map(r -&gt; r isa typeof(types_test[2]),types_vec))
+
+        ratio_of_type1 = count_of_type1/N
+        ratio_of_type2 = count_of_type2/N
+        type1_str = replace(string(types_test[1]),&quot;()&quot;=&gt;&quot;&quot;)
+        type2_str = replace(string(types_test[2]),&quot;()&quot;=&gt;&quot;&quot;)
+
+        results = (
+            type1 = (type1_str,ratio_of_type1),
+            type2 = (type2_str, ratio_of_type2))
+        return results
+    end
+
+
+
+//
+
+
+
+// # Version 01 
+    p₁ = p₂ = 0.5
+    N = 1000
+    rounds = map(x -&gt; choose_test_computation(p),1:N)
+    test_comp_types = [Test(),Computation()]
+    rounds = map(x -&gt; choose_test_computation(p₁),1:N)
+    test_com_ratio = get_ratio_between_two_types(rounds,test_comp_types)
+
+
+    
+
+    &quot;&quot;&quot;
+        Bar plot for a single iteration of N rounds.
+        Count number of tests and computations.
+        Return proportion as a barplot.
+    &quot;&quot;&quot;
+    f = Figure(resolution = (800,600))
+    xs = [1,2]
+    ys = [ratio_of_tests,ratio_of_computations]
+    types = [&quot;Test&quot;,&quot;Computation&quot;]
+    ax = Axis(
+        f[1,1],
+        xlabel = &quot;Type&quot;,ylabel=&quot;proportion&quot;,
+        xticks = (xs, types),
+        title = &quot;Proportion of tests to computations&quot;)
+    barplot!(ax,xs,ys)
+    f
+//
+
+
+
+// # Version 02
+p₁ = p₂ = 0.5
+N = 1000
+test_comp_types = [Test(),Computation()]
+abort_ok_types = [Abort(),Ok()]
+
+rounds = map(x -&gt; choose_test_computation(p₁),1:N)
+results = map(r -&gt; get_round_result(r,p₂),rounds)
+abort_ok_ratio = get_ratio_between_two_types(results,abort_ok_types)
+
+
+    &quot;&quot;&quot;
+        Bar plot for a single iteration of N rounds.
+        Count number of aborts and oks
+        Return proportion as a barplot.
+    &quot;&quot;&quot;
+    f = Figure(resolution = (800,600))
+        xs = [1,2]
+        xs_tick = [abort_ok_ratio[1][1],abort_ok_ratio[2][1]]
+        ys = [abort_ok_ratio[1][2],abort_ok_ratio[2][2]]
+        ax = Axis(
+            f[1,1],
+            xlabel = &quot;Type&quot;,ylabel=&quot;proportion&quot;,
+            xticks = (xs, xs_tick),
+            title = &quot;Proportion of $(xs_tick[1]) to $(xs_tick[2])&quot;)
+        barplot!(ax,xs,ys)
+    f
+//
+
+
+// # Test redo
+    samesies = []
+    p = 0.5        
+    for i in 1:N
+        u₁ = rand()
+        u₂ = do_redo(u₁,p)
+        res = u₁ == u₂
+        push!(samesies,res)
+    end
+
+    
+    B = [(i, count(==(i), samesies)/N) for i in unique(samesies)]
+
+    &quot;&quot;&quot;
+        Server and Client perform same sub-protocol
+        Client sends |V| -&gt; Server
+        
+
+    &quot;&quot;&quot;
+
+
+//
+
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../WalkThrough/">« A basic walk through</a><a class="docs-footer-nextpage" href="../graphs_01/">Working with graphs 01 »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.24 on <span class="colophon-date" title="Tuesday 21 February 2023 04:31">Tuesday 21 February 2023</span>. Using Julia version 1.8.5.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
