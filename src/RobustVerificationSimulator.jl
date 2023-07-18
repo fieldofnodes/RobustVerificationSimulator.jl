@@ -16,6 +16,7 @@ export
     TestRound,
     ComputationRound,
     TrapQubit,
+    DummyQubit,
     ComputationQubit,
     InputQubit,
     NotInputQubit,
