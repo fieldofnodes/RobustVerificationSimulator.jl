@@ -51,7 +51,7 @@ We take `graph_for_client` and convert it to a `MetaGraph`, this is a graph whic
 ```julia
 meta_graph_for_client = @chain graph_for_client begin
     MetaGraph(_)
-    generate_property_graph!(_,Computation())
+    generate_property_graph!(_,ComputationRound())
 end
 ```
 
@@ -98,7 +98,7 @@ We create a `g_diff_cols` a vector of vectors, each one is a different colouring
  [1, 2, 1, 2, 1]
 ```
 
-Each vector is a different colouring. The top vector `[2, 1, 1, 1, 2]` is a single colour set. Elements that are `1` are the `Dummy` qubits and `2` are the `Test` qubits. As an example of a individual colouring
+Each vector is a different colouring. The top vector `[2, 1, 1, 1, 2]` is a single colour set. Elements that are `1` are the `DummyQubit` qubits and `2` are the `Test` qubits. As an example of a individual colouring
 
 ![single colour](assets/example_single_colour.png)
 
@@ -114,7 +114,7 @@ for i in Base.OneTo(N)
         # Create property graph
         client_process_graph = MetaGraph(graph_for_client)
         # Add round type
-        set_prop!(client_process_graph, :round_type, Test())
+        set_prop!(client_process_graph, :round_type, TestRound())
         # Sample colouring
         trap_dummy_vector = get_random_coloring(g_diff_cols)
         # Generate trap/test graph
@@ -124,7 +124,7 @@ for i in Base.OneTo(N)
         # Remove secrete properties of client graph
         #rem_prop!(mgraphs_for_server, 1, :name)
         # Verify bᵥ = rᵥ ⊕ dᵥ 
-        #   for v ∈ Trap and N(v) ∈ Dummy, 
+        #   for v ∈ Trap and N(v) ∈ DummyQubit, 
         #   dᵥ = ⨁ᵢ ∈ N(v) dᵢ
         # Outcome for round = 
         #   1 for bᵥ = rᵥ ⊕ dᵥ is true and 
@@ -135,7 +135,7 @@ for i in Base.OneTo(N)
         # Return bᵥ
     elseif round_type isa Computation
         client_process_graph = copy(meta_graph_for_client)
-        set_prop!(client_process_graph, :round_type, Computation())
+        set_prop!(client_process_graph, :round_type, ComputationRound())
         set_prop!(client_process_graph, 
             :round_outcome, rand_int())
     else
@@ -155,15 +155,15 @@ end
     + We create a property graph
     + We prototyping and round evaluation we add the round type to the graph.
     + We sample uniformly from our set of different graph colour configurations.
-    + We generated the `Trap` and `Dummy` graph and add attributes per vertex.
+    + We generated the `Trap` and `DummyQubit` graph and add attributes per vertex.
     + We make a copy of this graph.
         + One copy is for the client
         + One copy, which is stripped of secret properties, is sent to the server.
     + The server returns bᵥ and we verify 
         + bᵥ = rᵥ ⊕ dᵥ
-        + for v ∈ Trap and N(v) ∈ Dummy,
+        + for v ∈ Trap and N(v) ∈ DummyQubit,
         dᵥ = ⨁ᵢ ∈ N(v) dᵢ
-        + These were generated when we generated the `Trap` and `Dummy` graph. 
+        + These were generated when we generated the `Trap` and `DummyQubit` graph. 
         + Outcome for round:
         + 1 for bᵥ = rᵥ ⊕ dᵥ is true and 
         + 0 for bᵥ = rᵥ ⊕ dᵥ  is false

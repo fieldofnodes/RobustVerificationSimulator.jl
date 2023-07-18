@@ -3,7 +3,7 @@
         this true.
     """
     function probability_asser(p)
-        return @assert 0 <= p <= 1 "Input must be a probability (between 0 and 1), not $(p)"
+        return @assert 0 <= p <= 1 "InputQubit must be a probability (between 0 and 1), not $(p)"
     end
 
 
@@ -17,15 +17,15 @@
 
 
     """
-        Input a probability -> Union{Test,Computation}
+        InputQubit a probability -> Union{TestRound,ComputationRound}
     """
     function choose_test_computation(p)
         probability_asser(p)
         u = rand()
         if u < p
-            return Test()
+            return TestRound()
         elseif u >=p
-            return Computation()
+            return ComputationRound()
         else
             error_call_not_test_computation()
         end
@@ -33,7 +33,7 @@
 
 
     """
-        Input a probability -> Union{OK,Abort}
+        InputQubit a probability -> Union{OK,Abort}
     """
     function return_ok_or_abort(p)
         probability_asser(p)
@@ -48,7 +48,7 @@
     end
 
     """
-        Input two proabailites (u,p) -> u
+        InputQubit two proabailites (u,p) -> u
         If uₜₑₛₜ < p -> draw new u ~ U(0,1)
         else return u 
     """
@@ -100,9 +100,9 @@
 
 
 """
-    Trap() -> get kπ/4 k∈0..7
+    TrapQubit() -> get kπ/4 k∈0..7
 """
-function qubit_information(::Trap)
+function qubit_information(::TrapQubit)
     x = rand(0:7)
     if x == 0
         return string("|+>")
@@ -113,18 +113,18 @@ end
 
 
 """
-    Dummy() -> 0,1
+    DummyQubit() -> 0,1
 """
-function qubit_information(::Dummy)
+function qubit_information(::DummyQubit)
     x = rand([0,1])
     return string("|",x,">")
 end
 
 
 """
-    Computation() -> get kπ/4 k∈0..7
+    ComputationRound() -> get kπ/4 k∈0..7
 """
-function qubit_information(::Computation)
+function qubit_information(::ComputationRound)
     x = rand(0:7)
     if x == 0
         return string("|+>")

@@ -32,7 +32,7 @@ using Chain
     """
         Extracts from a Graphs.Coloring{Int64} -> Vector{Vector{Int64}}
         Once a coloring is selected a vector of integers will result
-        1 -> Dummy vertex
+        1 -> DummyQubit vertex
         2 -> Trap
     """
     function separate_each_color(g::Graphs.Coloring{Int64})

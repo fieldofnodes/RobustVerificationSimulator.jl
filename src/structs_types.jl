@@ -6,22 +6,22 @@ struct Redo end
 """
     Round Test type
 """
-struct Test end
+struct TestRound end
 
 """
     Round Computation type
 """
-struct Computation end
+struct ComputationRound end
 
 """
     Qubit Trap type
 """
-struct Trap end
+struct TrapQubit end
 
 """
-    Qubit Dummy type
+    Qubit DummyQubit type
 """
-struct Dummy end
+struct DummyQubit end
 
 """
     Qubit ComputationQubit type
@@ -29,14 +29,14 @@ struct Dummy end
 struct ComputationQubit end
 
 """
-    Qubit Input type
+    Qubit InputQubit type
 """
-struct Input end
+struct InputQubit end
 
 """
-    Qubit NotInput type
+    Qubit NotInputQubit type
 """
-struct NotInput end
+struct NotInputQubit end
 
 """
     Round outcome type

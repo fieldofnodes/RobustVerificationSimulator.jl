@@ -13,12 +13,12 @@ using Reexport
 
 export 
     Redo,
-    Test,
-    Computation,
-    Trap,
+    TestRound,
+    ComputationRound,
+    TrapQubit,
     ComputationQubit,
-    Input,
-    NotInput,
+    InputQubit,
+    NotInputQubit,
     Ok,
     Abort,
     generate_simple_graph,

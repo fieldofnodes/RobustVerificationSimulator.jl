@@ -27,7 +27,7 @@
 ```
 
 ```@docs
-    Dummy
+    DummyQubit
 ```
 
 
@@ -36,11 +36,11 @@
 ```
 
 ```@docs
-    Input
+    InputQubit
 ```
 
 ```@docs
-    NotInput
+    NotInputQubit
 ```
 
 ```@docs
@@ -89,7 +89,7 @@
 
 ## Round functions
 
-Including functions dealing with  `Computation` or `Test` and further for `Trap` or `Dummy` qubit tyes.
+Including functions dealing with  `Computation` or `Test` and further for `Trap` or `DummyQubit` qubit tyes.
 
 ```@docs
     choose_test_computation

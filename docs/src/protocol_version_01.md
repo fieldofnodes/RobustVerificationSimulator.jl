@@ -24,7 +24,7 @@ struct Redo end
         this true.
     """
     function probability_asser(p)
-        return @assert 0 <= p <= 1 "Input must be a probability (between 0 and 1), not $(p)"
+        return @assert 0 <= p <= 1 "InputQubit must be a probability (between 0 and 1), not $(p)"
     end
 
 
@@ -38,15 +38,15 @@ struct Redo end
 
 
     """
-        Input a probability -> Union{Test,Computation}
+        InputQubit a probability -> Union{TestRound,ComputationRound}
     """
     function choose_test_computation(p)
         probability_asser(p)
         u = rand()
         if u < p
-            return Test()
+            return TestRound()
         elseif u >=p
-            return Computation()
+            return ComputationRound()
         else
             error_call_not_test_computation()
         end
@@ -54,7 +54,7 @@ struct Redo end
 
 
     """
-        Input a probability -> Union{OK,Abort}
+        InputQubit a probability -> Union{OK,Abort}
     """
     function return_ok_or_abort(p)
         probability_asser(p)
@@ -69,7 +69,7 @@ struct Redo end
     end
 
     """
-        Input two proabailites (u,p) -> u
+        InputQubit two proabailites (u,p) -> u
         If uₜₑₛₜ < p -> draw new u ~ U(0,1)
         else return u 
     """
@@ -151,7 +151,7 @@ struct Redo end
     p₁ = p₂ = 0.5
     N = 1000
     rounds = map(x -> choose_test_computation(p),1:N)
-    test_comp_types = [Test(),Computation()]
+    test_comp_types = [TestRound(),ComputationRound()]
     rounds = map(x -> choose_test_computation(p₁),1:N)
     test_com_ratio = get_ratio_between_two_types(rounds,test_comp_types)
 
@@ -181,7 +181,7 @@ struct Redo end
 // # Version 02
 p₁ = p₂ = 0.5
 N = 1000
-test_comp_types = [Test(),Computation()]
+test_comp_types = [TestRound(),ComputationRound()]
 abort_ok_types = [Abort(),Ok()]
 
 rounds = map(x -> choose_test_computation(p₁),1:N)

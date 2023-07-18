@@ -116,9 +116,9 @@ end
 
 
 """
-    Computation() -> get kπ/4 k∈0..7
+    ComputationRound() -> get kπ/4 k∈0..7
 """
-function qubit_information(::Computation)
+function qubit_information(::ComputationRound)
         return string("|+",θᵥ(),">")
 end
 

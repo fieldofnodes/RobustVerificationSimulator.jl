@@ -19,7 +19,7 @@ struct Redo end
         this true.
     &quot;&quot;&quot;
     function probability_asser(p)
-        return @assert 0 &lt;= p &lt;= 1 &quot;Input must be a probability (between 0 and 1), not $(p)&quot;
+        return @assert 0 &lt;= p &lt;= 1 &quot;InputQubit must be a probability (between 0 and 1), not $(p)&quot;
     end
 
 
@@ -33,15 +33,15 @@ struct Redo end
 
 
     &quot;&quot;&quot;
-        Input a probability -&gt; Union{Test,Computation}
+        InputQubit a probability -&gt; Union{TestRound,ComputationRound}
     &quot;&quot;&quot;
     function choose_test_computation(p)
         probability_asser(p)
         u = rand()
         if u &lt; p
-            return Test()
+            return TestRound()
         elseif u &gt;=p
-            return Computation()
+            return ComputationRound()
         else
             error_call_not_test_computation()
         end
@@ -49,7 +49,7 @@ struct Redo end
 
 
     &quot;&quot;&quot;
-        Input a probability -&gt; Union{OK,Abort}
+        InputQubit a probability -&gt; Union{OK,Abort}
     &quot;&quot;&quot;
     function return_ok_or_abort(p)
         probability_asser(p)
@@ -64,7 +64,7 @@ struct Redo end
     end
 
     &quot;&quot;&quot;
-        Input two proabailites (u,p) -&gt; u
+        InputQubit two proabailites (u,p) -&gt; u
         If uₜₑₛₜ &lt; p -&gt; draw new u ~ U(0,1)
         else return u 
     &quot;&quot;&quot;
@@ -146,7 +146,7 @@ struct Redo end
     p₁ = p₂ = 0.5
     N = 1000
     rounds = map(x -&gt; choose_test_computation(p),1:N)
-    test_comp_types = [Test(),Computation()]
+    test_comp_types = [TestRound(),ComputationRound()]
     rounds = map(x -&gt; choose_test_computation(p₁),1:N)
     test_com_ratio = get_ratio_between_two_types(rounds,test_comp_types)
 
@@ -176,7 +176,7 @@ struct Redo end
 // # Version 02
 p₁ = p₂ = 0.5
 N = 1000
-test_comp_types = [Test(),Computation()]
+test_comp_types = [TestRound(),ComputationRound()]
 abort_ok_types = [Abort(),Ok()]
 
 rounds = map(x -&gt; choose_test_computation(p₁),1:N)
